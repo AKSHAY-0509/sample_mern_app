@@ -1,20 +1,16 @@
-let express=require("express");
-let router=express.Router();
+let express = require('express');
+let router = express.Router();
 router.post("/register",(req,res)=>{
     console.log(req.body);
-    res.send("req.body");
+    res.send("register page called");
 })
-
 router.post("/login",(req,res)=>{
-    res.send("login sucessfully");
+    res.send("login page called");
 })
-
-router.get("/viewtask",(req,res)=>{
-    res.send("view task router");
+router.get("/view task",(req,res)=>{
+    res.send("view task page called");
 })
-
 router.put("/updatestatus",(req,res)=>{
-    res.send("updatestatus router");
+    res.send("update status page called");
 })
-
 module.exports=router;
