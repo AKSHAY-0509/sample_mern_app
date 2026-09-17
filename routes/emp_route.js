@@ -1,10 +1,12 @@
 let express = require("express");
 let router = express.Router();
+let {users}=require("../models/users")
 
-router.post("/register", (req, res) => {
+router.post("/register",async (req, res) => {
     console.log(req.body);
-    // res.send("regisstered sucessfully");
-    res.send(req.body);
+    let newuser=users(req.body);
+    let result= await newuser.save();
+    res.send(result);
 });
 
 router.post("/login", (req, res) => {
