@@ -1,9 +1,9 @@
-function footer() {
-
-    return (
-        <div>
-    <footer>@copyright 2026-akshay</footer>
-        </div>
-    )
+function Footer() {
+  return (
+    <footer>@copyright 2026-AKSHAY
+        
+    </footer>
+  )
 }
-export default footer;
+
+export default Footer;
