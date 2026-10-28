@@ -1,24 +1,77 @@
-let express = require("express");
-let router = express.Router();
-let {users}=require("../models/users")
+let express=require("express");
+let router=express.Router();
+let bcrypt=require('bcrypt');
+let {users}=require("../models/users");
 
-router.post("/register",async (req, res) => {
-    console.log(req.body);
-    let newuser=users(req.body);
-    let result= await newuser.save();
+router.post("/register",async (req,res)=>{
+    const {name,email,password,role}=req.body;
+    if(!name || !email || !password || !role){
+        return res.status(400).json({message:"Name, email, password, and role are required."});
+    }
+
+    if(!["HR","EMPLOYEE"].includes(role)){
+        return res.status(400).json({message:"Role must be HR or EMPLOYEE."});
+    }
+
+    try{
+        const hashedPassword=await bcrypt.hash(password,10);
+        const newuser=await users.create({name,email,password:hashedPassword,role});
+        res.status(201).json({
+            id:newuser._id,
+            name:newuser.name,
+            email:newuser.email,
+            role:newuser.role
+        });
+    }catch(error){
+        if(error.code===11000){
+            return res.status(409).json({message:"An account with this email already exists."});
+        }
+
+        console.error("Failed to register user:",error);
+        res.status(500).json({message:"Registration failed. Please try again later."});
+    }
+});
+
+router.post("/login",async (req,res)=>{
+    let result=await users.findOne({email:req.body.email})
+    if(result){
+        let matchpass=await bcrypt.compare(req.body.password,result.password);
+        if(matchpass){
+            res.send({message:"Login successful",
+                "user":{
+                    "_id":result._id,
+                    "name":result.name,
+                    "email":result.email,
+                    "role":result.role  
+                }
+            });
+        }
+        else{
+            res.send({message:"Login failed"});
+        }
+
+    }else{
+        res.send({message:"User not found"});
+    }
+    
+});
+
+router.get("/viewtask",(req,res)=>{
+    res.send("view page called");
+});
+
+router.put("/updatestatus",(req,res)=>{
+    res.send("updatestatus page called");
+});
+
+
+router.patch("/updateprofile/:id",async (req,res)=>{
+    let data=req.body;
+    if(data.password){
+        data.password=await bcrypt.hash(data.password,10);
+    }
+    let result=await users.findByIdAndUpdate(req.params.id,data,{new:true});
     res.send(result);
-});
+})
 
-router.post("/login", (req, res) => {
-    res.send("login sucessfully");
-});
-
-router.get("/viewtask", (req, res) => {
-    res.send("view task router");
-});
-
-router.put("/updatestatus", (req, res) => {
-    res.send("updatestatus router");
-});
-
-module.exports = router;
+module.exports=router;
