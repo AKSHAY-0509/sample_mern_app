@@ -8,6 +8,7 @@ import Contact from './pages/contact.jsx'
 import AdminLogin from './pages/AdminLogin.jsx'
 import AdminHome from './pages/AdminHome.jsx'
 import { Routes, Route } from 'react-router-dom'
+import Register from './pages/register.jsx'
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register></Register>}></Route>
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/adminlogin" element={<AdminLogin ></AdminLogin> }></Route>

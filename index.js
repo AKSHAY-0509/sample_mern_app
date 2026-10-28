@@ -1,6 +1,7 @@
 let express=require("express");
+let cors=require('cors');
 let app=express();
-
+app.use(cors());
 
 let hrroutes=require("./routes/hr_route");
 let emprouter=require("./routes/emp_route")
